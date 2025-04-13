@@ -1,7 +1,9 @@
 <template>
   <v-card
-    class="mx-auto my-12"
+    class="mx-auto my-6"
+    link
     rounded="lg"
+    :to="`/${props.event.id}`"
   >
     <v-img
       cover
@@ -30,12 +32,13 @@
     <v-divider class="mx-4 mb-1" />
 
     <v-card-text>
-      <div class="text-subtitle-1">
-        {{ props.event.venue.name }}
-      </div>
-    </v-card-text>
-
-    <v-card-text>
+      <v-row>
+        <v-col>
+          <div class="text-subtitle-1">
+            {{ props.event.venue.name }}, {{ props.event.venue.city }}
+          </div>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col>
           <div>Datum: {{ formattedDate }}</div>
@@ -48,10 +51,11 @@
 
     <v-card-actions>
       <v-btn
+        append-icon="mdi-arrow-right"
         block
-        border
-        color="deep-purple-lighten-2"
-        text="ab 1 €"
+        color="primary"
+        :text="soldOut ? 'Ausverkauft' : `ab ${props.event.minPrice.value} €`"
+        variant="flat"
       />
     </v-card-actions>
   </v-card>
@@ -62,8 +66,12 @@
     'event',
   ])
 
+  const soldOut = computed(() => {
+    return props.event?.soldout
+  })
+
   const formattedDate = computed(() => {
-    const date = new Date(props.event.start);
+    const date = new Date(props.event?.start);
 
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -74,7 +82,7 @@
   })
 
   const formattedStartTime = computed(() => {
-    const date = new Date(props.event.start);
+    const date = new Date(props.event?.start);
 
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
@@ -83,7 +91,7 @@
     return customTime
   })
 
-  function getIconByCategoryId(categoryId: string) {
+  function getIconByCategoryId (categoryId: string) {
     switch (categoryId) {
       case '320':
         return 'mdi-microphone-variant';

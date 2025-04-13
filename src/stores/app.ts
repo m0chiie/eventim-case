@@ -1,6 +1,6 @@
 // Utilities
 import { defineStore } from 'pinia'
-import { getEvents } from './api/endpoints';
+import { getEvent, getEvents } from './api/endpoints';
 
 interface Event {
   id: string
@@ -15,8 +15,15 @@ export const useAppStore = defineStore('app', () => {
     events.value = responseData.data;
   }
 
+  async function getEventDetails (eventId: string): Promise<object> {
+    const responseData = await getEvent(eventId);
+
+    return responseData.data;
+  }
+
   return {
     events,
     getEventList,
+    getEventDetails,
   }
 })
