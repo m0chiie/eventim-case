@@ -1,49 +1,57 @@
 <template>
-  <v-container v-if="event" class="py-6">
-    <v-img
-      class="rounded mb-6"
-      cover
-      height="300"
-      rounded="lg"
-      :src="`https://www.eventim-light.com/de/api/image/${event.image.id}/facebook_event_cover/webp`"
-    />
+  <v-container v-if="event" class="py-6" max-width="1200">
+    <template v-if="loading">
+      <v-progress-circular
+        color="primary"
+        indeterminate
+      />
+    </template>
+    <div v-else>
+      <v-img
+        class="rounded mb-6"
+        cover
+        height="300"
+        rounded="lg"
+        :src="`https://www.eventim-light.com/de/api/image/${event.image.id}/facebook_event_cover/webp`"
+      />
 
-    <v-row>
-      <v-col cols="12" md="8">
-        <h1 class="text-h4 font-weight-bold mb-4">{{ event.title }}</h1>
+      <v-row>
+        <v-col cols="12" md="8">
+          <h1 class="text-h4 font-weight-bold mb-4">{{ event.title }}</h1>
 
-        <v-row>
-          <v-col cols="12" sm="6">
-            <div class="text-subtitle-1 mb-2 d-flex">
-              <v-icon class="mr-1" color="error" icon="mdi-calendar" />
-              <div>
-                <div>{{ formatDate(event.start) }}</div>
-                <div>Beginn: {{ formatTime(event.start) }} Uhr</div>
-                <div>Einlass: {{ formatTime(event.doorsOpen) }} Uhr</div>
+          <v-row>
+            <v-col cols="12" sm="6">
+              <div class="text-subtitle-1 mb-2 d-flex">
+                <v-icon class="mr-1" color="error" icon="mdi-calendar" />
+                <div>
+                  <div>{{ formatDate(event.start) }}</div>
+                  <div>Beginn: {{ formatTime(event.start) }} Uhr</div>
+                  <div>Einlass: {{ formatTime(event.doorsOpen) }} Uhr</div>
+                </div>
               </div>
-            </div>
-          </v-col>
-          <v-col cols="12" sm="6">
-            <div class="d-flex align-start mb-2 d-flex">
-              <v-icon class="mr-2" color="error" icon="mdi-map-marker" />
-              <div>
-                <div>{{ event.venue.name }}</div>
-                <div>{{ event.venue.street }}</div>
-                <div>{{ event.venue.zipCode }}, {{ event.venue.city }}</div>
+            </v-col>
+            <v-col cols="12" sm="6">
+              <div class="d-flex align-start mb-2 d-flex">
+                <v-icon class="mr-2" color="error" icon="mdi-map-marker" />
+                <div>
+                  <div>{{ event.venue.name }}</div>
+                  <div>{{ event.venue.street }}</div>
+                  <div>{{ event.venue.zipCode }}, {{ event.venue.city }}</div>
+                </div>
               </div>
-            </div>
-          </v-col>
-        </v-row>
+            </v-col>
+          </v-row>
 
-        <v-divider />
+          <v-divider />
 
-        <div class="text-body-1 my-4" v-html="event.description" />
-      </v-col>
+          <div class="text-body-1 my-4" v-html="event.description" />
+        </v-col>
 
-      <v-col cols="12" md="4">
-        <TicketSelector :soldout="event.soldout" :ticket-options="event.areas[0].prices" />
-      </v-col>
-    </v-row>
+        <v-col cols="12" md="4">
+          <TicketSelector :soldout="event.soldout" :ticket-options="event.areas[0].prices" />
+        </v-col>
+      </v-row>
+    </div>
   </v-container>
 </template>
 
@@ -56,9 +64,11 @@
   const route = useRoute()
   const eventId = (route.params as { eventId: string }).eventId
   const event = ref<object | null>(null)
+  const loading = ref<boolean>(true)
 
   onMounted(async () => {
     event.value = await store.getEventDetails(eventId);
+    loading.value = false
   })
 
   function formatDate (dateVal) {

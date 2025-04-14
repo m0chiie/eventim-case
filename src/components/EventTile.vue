@@ -54,7 +54,7 @@
         append-icon="mdi-arrow-right"
         block
         color="primary"
-        :text="soldOut ? 'Ausverkauft' : `ab ${props.event.minPrice.value} €`"
+        :text="soldOut ? 'Ausverkauft' : `ab ${formatPrice(props.event.minPrice.value)}`"
         variant="flat"
       />
     </v-card-actions>
@@ -90,6 +90,13 @@
     const customTime = `${hours}:${minutes}`;
     return customTime
   })
+
+  function formatPrice (price) {
+    return new Intl.NumberFormat('de-DE', {
+      style: 'currency',
+      currency: 'EUR',
+    }).format(price)
+  }
 
   function getIconByCategoryId (categoryId: string) {
     switch (categoryId) {

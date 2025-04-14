@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="ticket-selector mx-auto my-12"
+    class="ticket-selector mx-auto"
     rounded="lg"
   >
     <v-card-title>Tickets Buchen</v-card-title>
@@ -101,3 +101,11 @@
     { immediate: true }
   )
 </script>
+
+<style lang="scss" scoped>
+@media (min-width: 960px) {
+  .ticket-selector {
+    margin-top: 100px;
+  }
+}
+</style>

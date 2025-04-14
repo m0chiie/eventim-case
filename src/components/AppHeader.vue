@@ -3,7 +3,7 @@
     app
     flat
   >
-    <v-container>
+    <v-container max-width="1200">
       <v-img
         alt="Logo"
         class="mr-4"
